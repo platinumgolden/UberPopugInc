@@ -1,0 +1,82 @@
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: ./services/auth/Dockerfile
+      target: development
+    command: npm run start:dev auth
+    env_file:
+      - ./services/auth/.env
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+
+  tasks:
+    build:
+      context: .
+      dockerfile: ./services/tasks/Dockerfile
+      target: development
+    command: npm run start:dev tasks
+    env_file:
+      - ./services/tasks/.env
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/usr/src/app
+
+  pg:
+    image: postgres:14
+    volumes:
+      - ./data/pg:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    env_file:
+      - ./env/pg.env
+
+  dkron:
+    image: dkron/dkron:v3.1.11
+    restart: always
+    ports:
+      - '4082:8080'
+    volumes:
+      - .:/usr/src/app
+    command:
+      - 'agent'
+      - '--enable-prometheus'
+      - '--server'
+      - '--bootstrap-expect=1'
+      - '--node-name=node1'
+      - '--data-dir=/dkron.data'
+
+  kafka:
+    image: bitnami/kafka:3.1.0
+    hostname: kafka
+    restart: always
+    ports:
+      - '9092:9092'
+      - '9093:9093'
+    env_file:
+      - ./env/kafka.env
+
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./datastore/mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: 'root_user'
+      MONGO_INITDB_ROOT_PASSWORD: 'root_password'
+      MONGO_INITDB_DATABASE: 'auth'
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 3084:8081
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: 'root_user'
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 'root_password'
