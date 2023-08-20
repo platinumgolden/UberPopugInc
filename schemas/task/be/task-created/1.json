@@ -1,9 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Auth.UserRoleChanged.v1",
-  "description": "json schema for auth user role change event (version 1)",
+  "title": "Tasks.TaskCreated.v1",
+  "description": "json schema for task created event)",
   "type": "object",
-
   "definitions": {
     "eventData": {
       "type": "object",
@@ -23,7 +22,6 @@
       "required": ["publicId", "description", "state"]
     }
   },
-
   "properties": {
     "eventId": {
       "type": "string",
