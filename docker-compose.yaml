@@ -25,6 +25,19 @@ services:
     volumes:
       - .:/usr/src/app
 
+  notifications:
+    build:
+      context: .
+      dockerfile: ./services/notifications/Dockerfile
+      target: development
+    command: npm run start:dev notifications
+    env_file:
+      - ./services/notifications/.env
+    ports:
+      - '3005:3005'
+    volumes:
+      - .:/usr/src/app
+
   pg:
     image: postgres:14
     volumes:

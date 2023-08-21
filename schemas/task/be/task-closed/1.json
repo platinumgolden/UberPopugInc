@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tasks.TaskClosed.v1",
+  "description": "json schema for task closed event",
+  "type": "object",
+  "definitions": {
+    "eventData": {
+      "type": "object",
+      "properties": {
+        "publicId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "This is publicId of task"
+        },
+        "state": {
+          "type": "string"
+        }
+      },
+      "required": ["publicId", "state"]
+    }
+  },
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "eventVersion": {
+      "type": "number",
+      "enum": [1]
+    },
+    "eventTime": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "eventName": {
+      "type": "string"
+    },
+    "producer": {
+      "type": "string"
+    },
+
+    "data": {
+      "$ref": "#/definitions/eventData"
+    }
+  },
+  "required": [
+    "eventId",
+    "eventVersion",
+    "eventTime",
+    "eventName",
+    "producer",
+    "data"
+  ]
+}
